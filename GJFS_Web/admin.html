@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Admin Panel</h2>
+        <input type="text" id="searchBar" class="border p-2 w-full mb-4" placeholder="Enter file name..." oninput="searchFiles()">
+        <ul id="fileList" class="list-disc pl-5"></ul>
+        <p id="noFilesMessage" class="text-gray-500 hidden">No files found.</p>
+    </div>
+
+    <script>
+        function fetchFiles() {
+            let fileList = document.getElementById('fileList');
+            let noFilesMessage = document.getElementById('noFilesMessage');
+            fileList.innerHTML = "";
+            
+            fetch('http://127.0.0.1:5000/list-files')
+                .then(response => response.json())
+                .then(files => {
+                    if (!files || files.length === 0 || files.error) {
+                        noFilesMessage.classList.remove('hidden');
+                    } else {
+                        noFilesMessage.classList.add('hidden');
+                        files.forEach(file => {
+                            let li = document.createElement('li');
+                            li.textContent = file;
+                            fileList.appendChild(li);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching file list:', error);
+                    noFilesMessage.classList.remove('hidden');
+                });
+        }
+
+        function searchFiles() {
+            let query = document.getElementById('searchBar').value.toLowerCase();
+            let items = document.querySelectorAll('#fileList li');
+            let noFilesMessage = document.getElementById('noFilesMessage');
+            let anyVisible = false;
+            
+            items.forEach(item => {
+                if (item.textContent.toLowerCase().includes(query)) {
+                    item.style.display = '';
+                    anyVisible = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            noFilesMessage.classList.toggle('hidden', anyVisible);
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchFiles);
+    </script>
+
+
+  <!-- Social Media Buttons Section -->
+  <section class="bg-gray-100 py-10">
+    <div class="container mx-auto text-center">
+      <h3 class="text-2xl font-bold mb-4">Connect with Us</h3>
+      <p class="text-gray-700 mb-6">Follow us on social media for safety tips and product updates.</p>
+      <div class="flex justify-center space-x-6">
+        
+        <!-- WhatsApp Button -->
+        <a href="https://wa.me/919823142618" target="_blank" class="flex items-center bg-green-500 text-white px-5 py-3 rounded-full hover:bg-green-600 transition">
+          <i class="fab fa-whatsapp mr-2"></i> WhatsApp
+        </a>
+
+        <!-- Instagram Button -->
+        <a href="https://instagram.com/" target="_blank" class="flex items-center bg-pink-500 text-white px-5 py-3 rounded-full hover:bg-pink-600 transition">
+          <i class="fab fa-instagram mr-2"></i> Instagram
+        </a>
+
+        <!-- Facebook Button -->
+        <a href="https://facebook.com/" target="_blank" class="flex items-center bg-blue-600 text-white px-5 py-3 rounded-full hover:bg-blue-700 transition">
+          <i class="fab fa-facebook mr-2"></i> Facebook
+        </a>
+
+      </div>
+      <p class="text-lg text-gray-800 mt-6">Chat with us on WhatsApp: <strong>+91 9823142618</strong></p>
+    </div>
+  </section>
+
+  <footer class="bg-red-700 text-white text-center p-4 mt-10">
+    &copy; 2025 Ganga Jyoti Fire Service. All rights reserved.
+  </footer>
+
+  <a href="enquiry.html" class="fixed bottom-6 right-6 bg-red-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-red-800 transition z-50">
+    Enquire Now
+  </a>
+</body>
+</html>
